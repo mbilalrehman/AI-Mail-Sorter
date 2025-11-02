@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenbox AI - Sort Your Inbox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- VADER ko yahan load karein -->
+    <script src="https://cdn.jsdelivr.net/npm/vader-sentiment@1.1.3/dist/vader-sentiment.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .loader { border-top-color: #3498db; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <div id="app" class="min-h-screen">
+        <!-- ===== Navigation Bar ===== -->
+        <nav class="bg-white shadow-sm">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex-shrink-0 flex items-center">
+                        <svg class="h-8 w-auto text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0l-7.5-4.615A2.25 2.25 0 012.25 6.993V6.75" /></svg>
+                        <span class="ml-2 text-xl font-bold text-indigo-600">Zenbox AI</span>
+                    </div>
+                    <div class="flex items-center">
+                        <button id="signout-button" class="hidden bg-red-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-600">
+                            Sign Out
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ===== PAGE 1: Landing Page (Default) ===== -->
+        <div id="page-landing" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+                    Finally, an inbox that <span class="text-indigo-600">thinks</span>.
+                </h1>
+                <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                    Stop drowning in emails. Zenbox AI automatically scans your Gmail inbox, finds the signal in the noise, and tells you what *actually* needs your attention.
+                </p>
+                <div class="mt-10">
+                    <button id="login-button" class="bg-indigo-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12L12 16m0 0l-4-4m4 4V4M21 12v6.75a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18.75V12M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Connect Your Gmail Account
+                    </button>
+                </div>
+            </div>
+            <!-- Features Section -->
+            <div class="mt-24">
+                <h2 class="text-3xl font-bold text-center text-gray-900">How it works</h2>
+                <div class="mt-12 grid md:grid-cols-3 gap-8">
+                    <!-- ... (Features content same as before) ... -->
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="text-indigo-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>
+                        <h3 class="mt-4 text-xl font-semibold">1. Secure Connection</h3>
+                        <p class="mt-2 text-gray-600">Click connect, log in via Google's official pop-up. We never see your password.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="text-indigo-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12 12 0 0012 21.054a12 12 0 008.618-15.066z" /></svg></div>
+                        <h3 class="mt-4 text-xl font-semibold">2. Python AI Scan</h3>
+                        <p class="mt-2 text-gray-600">Your token is sent to our Python (Flask) server, which securely scans your emails using our AI logic.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <div class="text-indigo-500"><svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg></div>
+                        <h3 class="mt-4 text-xl font-semibold">3. Instant Report</h3>
+                        <p class="mt-2 text-gray-600">Get a simple, clean report of your sorted emails right here on this dashboard.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PAGE 2: Dashboard Page (Hidden by default) ===== -->
+        <div id="page-dashboard" class="hidden max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-900">Welcome, <span id="user-name">User</span>!</h1>
+                <p class="mt-2 text-lg text-gray-600">You are connected. Ready to scan?</p>
+                <button id="scan-button" class="mt-4 bg-indigo-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 shadow-lg">
+                    Scan My 25 Most Recent Emails
+                </button>
+            </div>
+            <!-- ... (Loader, Results, etc. - same as before) ... -->
+            <div id="loader" class="hidden mt-12 flex justify-center">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+                <p class="ml-4 text-gray-600">Sending request to Python server... Scanning your inbox...</p>
+            </div>
+            <div id="results-summary" class="hidden mt-12 bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-2xl font-semibold text-center mb-4">Your Inbox Snapshot</h2>
+                <div id="summary-content" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"></div>
+            </div>
+            <div id="results-list" class="hidden mt-8">
+                <h2 class="text-2xl font-semibold mb-4">Sorted Emails</h2>
+                <div id="list-content" class="space-y-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Login Script -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Main Application JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Configuration ---
+            // YEH CLIENT ID AAPKO GOOGLE CLOUD SE "WEB APPLICATION" WALI LANI HAI
+            const CLIENT_ID = '719149481181-n3vlf6tu0s846ctcb3i4nd3rmeeorfig.apps.googleusercontent.com'; // Apni "Web application" wali Client ID yahan paste karein
+            const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
+            
+            // --- 2. DOM Elements ---
+            const pageLanding = document.getElementById('page-landing');
+            const pageDashboard = document.getElementById('page-dashboard');
+            const loginButton = document.getElementById('login-button');
+            const signoutButton = document.getElementById('signout-button');
+            const scanButton = document.getElementById('scan-button');
+            const userName = document.getElementById('user-name');
+            const loader = document.getElementById('loader');
+            const resultsSummary = document.getElementById('results-summary');
+            const summaryContent = document.getElementById('summary-content');
+            const resultsList = document.getElementById('results-list');
+            const listContent = document.getElementById('list-content');
+            
+            let tokenClient;
+            let userAccessToken; // User ka token yahan save karein gay
+
+            // AI categories (Frontend k liye)
+            const categories = {
+                "URGENT_CLIENT": { color: "red-600", title: "Urgent" },
+                "SECURITY ALERT": { color: "yellow-500", title: "Security" },
+                "INVOICE/BILL": { color: "blue-600", title: "Bills" },
+                "FINANCE UPDATE": { color: "green-600", title: "Finance" },
+                "SPAM/PROMOTION": { color: "gray-500", title: "Promotions" },
+                "ACCOUNT UPDATE": { color: "purple-600", title: "Updates" },
+                "OTHER": { color: "gray-400", title: "Other" }
+            };
+
+            // --- 3. Initialization ---
+            window.onload = () => {
+                // Google Login ko initialize karein
+                tokenClient = google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID,
+                    scope: SCOPES,
+                    callback: tokenCallback, // Jab login ho jaye toh yeh function call ho
+                });
+            };
+
+            // Event Listeners
+            loginButton.onclick = requestToken;
+            signoutButton.onclick = signOut;
+            scanButton.onclick = scanInbox;
+
+            // --- 4. Authentication Logic ---
+            function requestToken() {
+                // User se har baar login maangein
+                tokenClient.requestAccessToken({prompt: 'consent'});
+            }
+
+            // Jab Google login pop-up se token dega
+            function tokenCallback(tokenResponse) {
+                userAccessToken = tokenResponse.access_token; // Token ko save karein
+                updateSigninStatus(true);
+            }
+
+            function signOut() {
+                userAccessToken = null;
+                google.accounts.oauth2.revoke(userAccessToken, () => {}); // Token ko revoke karein
+                updateSigninStatus(false);
+            }
+
+            function updateSigninStatus(isSignedIn) {
+                if (isSignedIn) {
+                    pageLanding.classList.add('hidden');
+                    pageDashboard.classList.remove('hidden');
+                    signoutButton.classList.remove('hidden');
+                } else {
+                    pageLanding.classList.remove('hidden');
+                    pageDashboard.classList.add('hidden');
+                    signoutButton.classList.add('hidden');
+                    resultsSummary.classList.add('hidden');
+                    resultsList.classList.add('hidden');
+                }
+            }
+            
+            // --- 5. Backend API Call ---
+            async function scanInbox() {
+                if (!userAccessToken) {
+                    alert("You are not logged in.");
+                    return;
+                }
+                
+                loader.classList.remove('hidden');
+                resultsSummary.classList.add('hidden');
+                resultsList.classList.add('hidden');
+                listContent.innerHTML = '';
+                summaryContent.innerHTML = '';
+                
+                try {
+                    // --- YEH HAI ASAL CONNECTION ---
+                    // Hum apne Flask server (port 5000) ko call kar rahay hain
+                    const response = await fetch('http://localhost:5000/scan-emails', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${userAccessToken}`, // Token ko header mein bhej rahay hain
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
+                    // Data mil gaya, ab display karein
+                    renderResults(data.emails, data.summary);
+
+                } catch (error) {
+                    console.error("Error fetching from Flask backend:", error);
+                    alert("Error: Could not connect to the Python backend. " + error.message);
+                } finally {
+                    loader.classList.add('hidden');
+                }
+            }
+            
+            // --- 6. Rendering Logic ---
+            function renderResults(emails, summary) {
+                // (Rendering logic bilkul same hai)
+                summaryContent.innerHTML = ''; 
+                for (const [key, count] of Object.entries(summary)) {
+                    const catInfo = categories[key] || categories["OTHER"];
+                    const summaryHtml = `
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">${catInfo.title}</p>
+                            <p class="text-3xl font-bold text-${catInfo.color}">${count}</p>
+                        </div>
+                    `;
+                    summaryContent.insertAdjacentHTML('beforeend', summaryHtml);
+                }
+                
+                listContent.innerHTML = ''; 
+                for (const email of emails) {
+                    const catInfo = categories[email.category] || categories["OTHER"];
+                    const emailHtml = `
+                        <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-${catInfo.color}">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-800">${email.subject}</p>
+                                    <p class="text-xs text-gray-500">${email.sender}</p>
+                                </div>
+                                <span class="text-xs font-semibold px-2 py-1 bg-${catInfo.color} bg-opacity-10 text-${catInfo.color} rounded-full">${catInfo.title}</span>
+                            </div>
+                        </div>
+                    `;
+                    listContent.insertAdjacentHTML('beforeend', emailHtml);
+                }
+
+                resultsSummary.classList.remove('hidden');
+                resultsList.classList.remove('hidden');
+            }
+            
+        }); 
+    </script>
+
+</body>
+</html>
+
