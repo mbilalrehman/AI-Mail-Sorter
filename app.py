@@ -12,16 +12,11 @@ import re
 app = Flask(__name__)
 CORS(app) 
 
-# --- AI Setup (Same as before) ---
+# --- AI Setup ---
 analyzer = SentimentIntensityAnalyzer()
 
-# (SpaCy ki zaroorat nahi kyun k V3 logic use kar rahay hain)
 
 def analyze_email(body):
-    """
-    Aapka AI logic (Version 4 - Hybrid & 100% Strong)
-    Yeh function priority k hisab se chalta hai.
-    """
     body_lower = body.lower()
     
     # --- Priority 1: High-Confidence Spam (Unsubscribe) ---
@@ -64,10 +59,7 @@ def analyze_email(body):
     # --- Default ---
     return "OTHER"
 
-def fetch_and_sort_emails(service): # Ab 'service' ko argument k taur par lein
-    """
-    Yeh function 'print' k bajaye 'return' karega.
-    """
+def fetch_and_sort_emails(service):
     if not service:
         return {"error": "Could not connect to Gmail service."}
 
@@ -151,4 +143,5 @@ if __name__ == '__main__':
     print("Starting Zenbox AI Flask Server at http://localhost:5000")
     # Ab 'credentials.json' ki zaroorat nahi
     app.run(port=5000, debug=False) # Debug mode off kar dein
+
 
